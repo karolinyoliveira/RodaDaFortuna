@@ -2,7 +2,7 @@ package modelo;
 
 /**
  *
- * @author braulio
+ * @author braulio, karoliny oliveira, caroline corrêia
  */
 public class Tabuleiro {
 
