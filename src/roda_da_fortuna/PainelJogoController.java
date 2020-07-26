@@ -15,7 +15,7 @@ import modelo.Tabuleiro;
 
 /**
  *
- * @author braulio
+ * @author braulio, karoliny oliveira, caroline corrêia
  */
 public class PainelJogoController {
 

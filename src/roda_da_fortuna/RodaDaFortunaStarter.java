@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author braulio
+ * @author braulio, karoliny oliveira, caroline corrêia
  */
 public class RodaDaFortunaStarter extends Application {
 
