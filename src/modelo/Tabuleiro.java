@@ -31,7 +31,7 @@ public class Tabuleiro {
     /**
      * Recebe o palpite do jogador
      * @param palpite
-     * @return true se bateu o palpite
+     * @return true se acertou
      */
     public boolean receberPalpite(char palpite) {
         return false; // remover

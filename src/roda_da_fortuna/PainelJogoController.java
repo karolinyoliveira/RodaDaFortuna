@@ -56,8 +56,7 @@ public class PainelJogoController {
         // instanciar a Roda
         this.roda = new Roda();
         // setar a imagem atual da Roda
-        //imagemRoda.setImage(this.roda.getImagemAtual()); // remover comentario, 
-                                                           // apos implementar a classe Roda
+        imagemRoda.setImage(this.roda.getImagemAtual());
 
         // bloquear o painel das vogais
         this.paneVogais.disableProperty().set(true);
@@ -68,62 +67,71 @@ public class PainelJogoController {
         this.paneConsoantes.disableProperty().set(true);
         // setar o evento clicarConsoante em cada botao das consoantes
         this.paneConsoantes.getChildren().forEach(n -> ((Button) n).setOnAction(e -> clicarConsoante(e)));
-        
+
     }
 
     /**
      * Implementa a logica de comprar uma vogal.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void comprarVogalAction(ActionEvent event) {
-        
+
     }
 
     /**
      * Implementa a logica de girar a roda.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void girarRodaAction(ActionEvent event) {
-        
+        this.roda.girarRoda();
+        imagemRoda.setImage(this.roda.getImagemAtual());
     }
 
     /**
      * Implementa a logica de tentar adivinhar o puzzle.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void resolverPuzzleAction(ActionEvent event) {
-        
+
     }
 
     /**
      * Implementa a logica de clicar em uma CONSOANTE.
-     * @param event 
+     *
+     * @param event
      */
     private void clicarConsoante(ActionEvent event) {
-        
+
     }
 
     /**
      * Implementa a logica de clicar em uma VOGAL.
-     * @param event 
+     *
+     * @param event
      */
     private void clicarVogal(ActionEvent event) {
-        
+
     }
 
     /**
-     * Verifica se o jogo terminou, ou seja, se todas as letras do puzzle foram preenchidas,
-     * e, em caso positivo, exibe uma mensagem informando quem ganhou e termina a aplicacao.
+     * Verifica se o jogo terminou, ou seja, se todas as letras do puzzle foram
+     * preenchidas, e, em caso positivo, exibe uma mensagem informando quem
+     * ganhou e termina a aplicacao.
      */
     private void isFimDoJogo() {
-        
+
     }
 
     /**
-     * Valida se todos os botoes das VOGAIS foram clicados, i.e., ficaram desativados.
+     * Valida se todos os botoes das VOGAIS foram clicados, i.e., ficaram
+     * desativados.
+     *
      * @return boolean
      */
     private boolean isVogaisEsgotadas() {
@@ -131,7 +139,9 @@ public class PainelJogoController {
     }
 
     /**
-     * Valida se todos os botoes das CONSOANTES foram clicados, i.e., ficaram desativados.
+     * Valida se todos os botoes das CONSOANTES foram clicados, i.e., ficaram
+     * desativados.
+     *
      * @return boolean
      */
     private boolean isConsoantesEsgotadas() {
@@ -140,27 +150,28 @@ public class PainelJogoController {
 
     /**
      * Cria e exibe uma janela de alerta.
+     *
      * @param type
      * @param titulo
-     * @param conteudo 
+     * @param conteudo
      */
     private void alerta(AlertType type, String titulo, String conteudo) {
 
     }
 
     /**
-     * Avanca para o proximo jogador.
-     * Adiciona o efeito de selecionado, i.e., <code>selected</code>, 
-     * no <code>TitledPane</code> do jogador atual.
+     * Avanca para o proximo jogador. Adiciona o efeito de selecionado, i.e.,
+     * <code>selected</code>, no <code>TitledPane</code> do jogador atual.
      */
     private void avancarProximoJogador() {
-        
+
     }
 
     /**
      * Recebe o puzzle e os nomes dos jogadores.
+     *
      * @param puzzle
-     * @param nomeJogadores 
+     * @param nomeJogadores
      */
     public void setPuzzleENomeJogadores(final String puzzle, final String... nomeJogadores) {
         this.tabuleiro = new Tabuleiro(puzzle);
