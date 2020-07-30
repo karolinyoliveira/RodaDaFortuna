@@ -109,10 +109,11 @@ public class PainelJogoController {
             this.paneConsoantes.disableProperty().set(false);
         } else {
             alerta(AlertType.WARNING, "Consoantes Esgotadas!", "Por favor, selecione outra opção.");
-            this.paneVogais.disableProperty().set(true);
+            this.girarRoda.disableProperty().set(true);
         }
 
         //Bloquear todo o resto
+        this.paneVogais.disableProperty().set(true);
         this.comprarVogal.disableProperty().set(true);
         this.girarRoda.disableProperty().set(true);
         this.resolverPuzzle.disableProperty().set(true);
@@ -164,8 +165,11 @@ public class PainelJogoController {
 
         //Bloqueia painel de consoantes e letra selecionada
         this.paneConsoantes.disableProperty().set(true);
-        //BLOQUEAR LETRA
 
+        ObservableList<Node> consoClicada = this.paneConsoantes.getChildren();
+        consoClicada.stream().filter((node) -> (node == event.getSource())).forEachOrdered((node) -> {
+            node.setDisable(true);
+        });
     }
 
     /**
@@ -174,11 +178,24 @@ public class PainelJogoController {
      * @param event
      */
     private void clicarVogal(ActionEvent event) {
-        //Trava o painel de vogais
+        //Verifica se a vogal existe na frase secreta e atualiza o puzzle
+        if (0 == 0) {
+            this.jogadores[posicaoJogadorAtual].aumentarPontos(this.roda.getValorAtual());
+            // } else {
+            avancarProximoJogador();
+        }
+        //Desbloqueia opções
+        this.girarRoda.disableProperty().set(false);
+        this.resolverPuzzle.disableProperty().set(false);
+
+        //Bloqueia painel de consoantes e letra selecionada
         this.paneVogais.disableProperty().set(true);
 
         //Desativa a letra selecionada
-        //Verifica se existe a vogal selecionada na frase secreta e atualiza o puzzle
+        ObservableList<Node> vogalClicada = this.paneVogais.getChildren();
+        vogalClicada.stream().filter((node) -> (node == event.getSource())).forEachOrdered((node) -> {
+            node.setDisable(true);
+        });
     }
 
     /**
@@ -205,7 +222,6 @@ public class PainelJogoController {
      * @return boolean
      */
     private boolean isVogaisEsgotadas() {
-
         int botaoV = 0;
 
         ObservableList<Node> verificaVogalEsgotada = this.paneVogais.getChildren();
