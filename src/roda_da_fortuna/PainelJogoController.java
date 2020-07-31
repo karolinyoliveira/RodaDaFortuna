@@ -38,10 +38,7 @@ public class PainelJogoController {
     private ImageView imagemRoda;
 
     @FXML
-    private Label labelPuzzle;
-
-    @FXML
-    private Label pontos, p1, p2, p3;
+    private Label labelPuzzle, p1, p2, p3;
 
     @FXML
     private GridPane paneVogais, paneConsoantes;
