@@ -32,7 +32,7 @@
                   <Font name="System Bold Italic" size="13.0" />
                </font>
                <content>
-                  <Label fx:id="pontos" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
+                  <Label fx:id="p1" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -47,7 +47,7 @@
                   <Font name="System Bold Italic" size="13.0" />
                </font>
                <content>
-                  <Label fx:id="pontos" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
+                  <Label fx:id="p2" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -62,7 +62,7 @@
                   <Font name="System Bold Italic" size="13.0" />
                </font>
                <content>
-                  <Label fx:id="pontos" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
+                  <Label fx:id="p3" alignment="CENTER" prefHeight="31.0" prefWidth="240.0" text="0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

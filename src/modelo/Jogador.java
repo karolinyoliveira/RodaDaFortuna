@@ -32,7 +32,7 @@ public class Jogador {
     }
 
     /**
-     * Aumenta os pontos en <code>aAumentar</code>
+     * Aumenta os pontos em <code>aAumentar</code>
      * @param aAumentar 
      */
     public void aumentarPontos(int aAumentar) {

@@ -1,5 +1,7 @@
 package roda_da_fortuna;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
@@ -36,6 +39,9 @@ public class PainelJogoController {
 
     @FXML
     private Label labelPuzzle;
+
+    @FXML
+    private Label pontos, p1, p2, p3;
 
     @FXML
     private GridPane paneVogais, paneConsoantes;
@@ -83,10 +89,25 @@ public class PainelJogoController {
      */
     @FXML
     private void comprarVogalAction(ActionEvent event) {
-
         if (!this.isVogaisEsgotadas()) {
+            //Desbloqueia painel de vogais
             this.paneVogais.disableProperty().set(false);
+
+            //Bloqueia as outras opções
+            this.comprarVogal.disableProperty().set(true);
+            this.girarRoda.disableProperty().set(true);
+            this.resolverPuzzle.disableProperty().set(true);
+
+            //Pontuação
             this.jogadores[posicaoJogadorAtual].reduzirPontos(custoVogal);
+            //Atualização de todo o tabuleiro
+            this.p1.setText(this.jogadores[0].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(0)).setContent(this.p1);
+            this.p2.setText(this.jogadores[1].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(1)).setContent(this.p2);
+            this.p3.setText(this.jogadores[2].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(2)).setContent(this.p3);
+
         } else {
             alerta(AlertType.WARNING, "Vogais Esgotadas!", "Por favor, selecione outra opção.");
             this.paneVogais.disableProperty().set(true);
@@ -104,6 +125,28 @@ public class PainelJogoController {
         this.roda.girarRoda();
         imagemRoda.setImage(this.roda.getImagemAtual());
 
+        //Avalia se o jogador perdeu a vez e seus pontos (bankrupt -2 e loseAturn -1)
+        if (this.roda.getValorAtual() == -2) {
+            alerta(AlertType.WARNING, "BANKRUPT!", "Você perdeu tudo.");
+            this.jogadores[posicaoJogadorAtual].zerarPontos();
+
+            //Atualização de todo o tabuleiro
+            this.p1.setText(this.jogadores[0].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(0)).setContent(this.p1);
+            this.p2.setText(this.jogadores[1].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(1)).setContent(this.p2);
+            this.p3.setText(this.jogadores[2].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(2)).setContent(this.p3);
+
+            avancarProximoJogador();
+            return;
+        }
+        if (this.roda.getValorAtual() == -1) {
+            avancarProximoJogador();
+            alerta(AlertType.WARNING, "Perdeu a Vez!", "É a vez de " + this.jogadorAtual.getNome());
+            return;
+        }
+
         //Desbloquear o painel das consoantes só quando há consoantes disponíveis
         if (!this.isConsoantesEsgotadas()) {
             this.paneConsoantes.disableProperty().set(false);
@@ -117,7 +160,6 @@ public class PainelJogoController {
         this.comprarVogal.disableProperty().set(true);
         this.girarRoda.disableProperty().set(true);
         this.resolverPuzzle.disableProperty().set(true);
-
     }
 
     /**
@@ -131,13 +173,14 @@ public class PainelJogoController {
         //Abre janela para o jogador dar sua resposta
         TilePane resolverPuzzle = new TilePane();
         TextInputDialog solucao = new TextInputDialog("Qual é a frase secreta?");
+        solucao.getDialogPane().lookupButton(ButtonType.CANCEL).setVisible(false);
+
         solucao.setHeaderText("Resolva o Puzzle");
-        Button ok = new Button("Ok");
         solucao.showAndWait();
 
         //Analisa resposta
         if (this.tabuleiro.receberPalpite(solucao.getEditor().getText())) {
-            alerta(AlertType.INFORMATION, "Fim de Jogo!", this.jogadorAtual.getNome() + " Venceu!");
+            alerta(AlertType.INFORMATION, "Fim de Jogo!", this.jogadorAtual.getNome() + " ganhou " + this.jogadorAtual.getPontos() + "!");
             Platform.exit();
             System.exit(0);
         } else {
@@ -153,23 +196,65 @@ public class PainelJogoController {
      */
     private void clicarConsoante(ActionEvent event) {
         //Verifica se a consoante existe na frase secreta e atualiza o puzzle
-        if (0 == 0) {
-            this.jogadores[posicaoJogadorAtual].aumentarPontos(this.roda.getValorAtual());
-            // } else {
-            avancarProximoJogador();
+        int flag = 0;
+        StringBuilder consoPresente = new StringBuilder(this.tabuleiro.getPalpitePuzzle());
+
+        //pegar a letra 
+        int y = event.toString().length() - 3;
+        char letraC = event.toString().charAt(y);
+
+        String c = this.tabuleiro.getPuzzle();
+
+        //ver se a consoante está na frase secreta       
+        CharacterIterator ciC = new StringCharacterIterator(c);
+
+        while (ciC.current() != CharacterIterator.DONE) {
+            if (letraC == c.charAt(ciC.getIndex())) {
+                consoPresente.setCharAt(ciC.getIndex(), letraC);
+                flag = 1;
+            }
+            ciC.next();
         }
 
-        //Desbloqueia opções
-        this.girarRoda.disableProperty().set(false);
-        this.resolverPuzzle.disableProperty().set(false);
-
-        //Bloqueia painel de consoantes e letra selecionada
-        this.paneConsoantes.disableProperty().set(true);
-
+        //Bloqueia a letra selecionada
         ObservableList<Node> consoClicada = this.paneConsoantes.getChildren();
         consoClicada.stream().filter((node) -> (node == event.getSource())).forEachOrdered((node) -> {
             node.setDisable(true);
         });
+
+        if (flag == 1) {
+            //atualiza o puzzle
+            this.tabuleiro.setPalpitePuzzle(consoPresente.toString());
+            //preenche o puzzle com a consoante acertada
+            this.labelPuzzle.setText(this.tabuleiro.getPalpitePuzzle());
+
+            //Pontuação
+            this.jogadores[posicaoJogadorAtual].aumentarPontos(this.roda.getValorAtual());
+
+            //Atualização no tabuleiro
+            this.p1.setText(this.jogadores[0].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(0)).setContent(this.p1);
+            this.p2.setText(this.jogadores[1].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(1)).setContent(this.p2);
+            this.p3.setText(this.jogadores[2].getPontos());
+            ((TitledPane) paneJogadores.getChildren().get(2)).setContent(this.p3);
+
+        } else {
+            avancarProximoJogador();
+        }
+
+        //Desbloqueia opções
+        if (Integer.parseInt(this.jogadorAtual.getPontos()) >= custoVogal) {
+            this.comprarVogal.disableProperty().set(false);
+        }
+        this.girarRoda.disableProperty().set(false);
+        this.resolverPuzzle.disableProperty().set(false);
+
+        //Bloqueia painel de consoantes
+        this.paneConsoantes.disableProperty().set(true);
+
+        //Verifica se todas as letras foram utilizadas
+        isFimDoJogo();
     }
 
     /**
@@ -178,17 +263,43 @@ public class PainelJogoController {
      * @param event
      */
     private void clicarVogal(ActionEvent event) {
-        //Verifica se a vogal existe na frase secreta e atualiza o puzzle
-        if (0 == 0) {
-            this.jogadores[posicaoJogadorAtual].aumentarPontos(this.roda.getValorAtual());
-            // } else {
-            avancarProximoJogador();
+        //Verificar se existe a vogal selecionada na frase secreta e atualiza o puzzle
+        int flag1 = 0;
+        StringBuilder vogalPresente = new StringBuilder(this.tabuleiro.getPalpitePuzzle());
+
+        //pegar a letra 
+        int x = event.toString().length() - 3;
+        char letraV = event.toString().charAt(x);
+
+        String v = this.tabuleiro.getPuzzle();
+
+        //ver se a vogal está na frase secreta       
+        CharacterIterator ciV = new StringCharacterIterator(v);
+
+        while (ciV.current() != CharacterIterator.DONE) {
+            if (letraV == v.charAt(ciV.getIndex())) {
+                vogalPresente.setCharAt(ciV.getIndex(), letraV);
+                flag1 = 1;
+            }
+            ciV.next();
         }
+
+        if (flag1 == 1) {
+            //atualiza o puzzle
+            this.tabuleiro.setPalpitePuzzle(vogalPresente.toString());
+
+            //preenche o puzzle com a vogal acertada
+            this.labelPuzzle.setText(this.tabuleiro.getPalpitePuzzle());
+        }
+
         //Desbloqueia opções
+        if (Integer.parseInt(this.jogadorAtual.getPontos()) >= custoVogal) {
+            this.comprarVogal.disableProperty().set(false);
+        }
         this.girarRoda.disableProperty().set(false);
         this.resolverPuzzle.disableProperty().set(false);
 
-        //Bloqueia painel de consoantes e letra selecionada
+        //Bloqueia painel de vogais e letra selecionada
         this.paneVogais.disableProperty().set(true);
 
         //Desativa a letra selecionada
@@ -196,6 +307,9 @@ public class PainelJogoController {
         vogalClicada.stream().filter((node) -> (node == event.getSource())).forEachOrdered((node) -> {
             node.setDisable(true);
         });
+
+        //Verifica se todas as letras foram utilizadas
+        isFimDoJogo();
     }
 
     /**
@@ -205,14 +319,15 @@ public class PainelJogoController {
      */
     private void isFimDoJogo() {
         //Verifica se todas as consoantes e vogais foram selecionadas
-        if (0 == 0 && 0 == 0) {
-
-            //Alerta de fim de jogo e finalização do programa
-            alerta(AlertType.INFORMATION, "Fim de Jogo!", this.jogadorAtual.getNome() + " Venceu!");
+        if (isConsoantesEsgotadas() == true && isVogaisEsgotadas() == true) {
+            alerta(AlertType.INFORMATION, "Fim de Jogo!", "Não houve vencedores.");
             Platform.exit();
             System.exit(0);
+        } //Verifica se o  puzzle foi resolvido no último palpite de letra
+        else if (this.tabuleiro.receberPalpite(this.tabuleiro.getPalpitePuzzle()) == true) {
+            this.comprarVogal.disableProperty().set(true);
+            this.girarRoda.disableProperty().set(true);
         }
-        return;
     }
 
     /**
@@ -243,7 +358,7 @@ public class PainelJogoController {
     private boolean isConsoantesEsgotadas() {
         int botaoC = 0;
 
-        ObservableList<Node> verificaConsoEsgotada = this.paneVogais.getChildren();
+        ObservableList<Node> verificaConsoEsgotada = this.paneConsoantes.getChildren();
         botaoC = verificaConsoEsgotada.stream().filter((node) -> (node.isDisable() == true)).map((_item) -> 1).reduce(botaoC, Integer::sum);
 
         if (botaoC == verificaConsoEsgotada.size()) {
@@ -281,8 +396,9 @@ public class PainelJogoController {
             posicaoJogadorAtual = 0;
         }
         this.jogadorAtual = this.jogadores[posicaoJogadorAtual];
+
         //Verifica se o jogador tem dinheiro para habilitar ComprarVogal
-        if (Integer.parseInt(this.jogadorAtual.getPontos()) >= 250) {
+        if (Integer.parseInt(this.jogadorAtual.getPontos()) >= custoVogal) {
             this.comprarVogal.disableProperty().set(false);
         }
 
