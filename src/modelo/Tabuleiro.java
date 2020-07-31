@@ -77,5 +77,9 @@ public class Tabuleiro {
     public String getPuzzle() {
         return puzzle;
     }
+    
+    public void setPalpitePuzzle(String novo){
+        this.palpitePuzzle = novo;
+    }
 
 }
