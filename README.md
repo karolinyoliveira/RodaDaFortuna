@@ -1,3 +1,4 @@
-# RodaDaFortuna
-Projeto Final da Disciplina de Programação Orientada à Objetos
+# Wheel of Fortune
+Final Project of the Object-Oriented Programming course
+
 
